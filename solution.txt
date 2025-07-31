@@ -1,0 +1,7 @@
+// Test in Node.js REPL or add to bottom of file
+const testData = generateSampleData(50);
+const analyzer = new DataAnalyzer(testData);
+
+console.log('Total Revenue:', analyzer.calculateTotalRevenue());
+console.log('Top Products:', analyzer.getTopSellingProducts(3));
+console.log('Category Sales:', analyzer.getSalesByCategory());
