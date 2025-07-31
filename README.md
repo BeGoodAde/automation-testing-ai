@@ -2,10 +2,13 @@
 
 **A comprehensive showcase of modern automation testing techniques using AI-assisted development**
 
+[![CI](https://github.com/BeGoodAde/automation-testing-ai/workflows/🧪%20Continuous%20Integration/badge.svg)](https://github.com/BeGoodAde/automation-testing-ai/actions)
 [![GitHub License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.8+-brightgreen.svg)](https://python.org)
 [![Node.js Version](https://img.shields.io/badge/node-16+-green.svg)](https://nodejs.org)
 [![AI Powered](https://img.shields.io/badge/AI-Powered-purple.svg)](https://github.com/features/copilot)
+[![GitHub Stars](https://img.shields.io/github/stars/BeGoodAde/automation-testing-ai.svg)](https://github.com/BeGoodAde/automation-testing-ai/stargazers)
+[![GitHub Forks](https://img.shields.io/github/forks/BeGoodAde/automation-testing-ai.svg)](https://github.com/BeGoodAde/automation-testing-ai/network)
 
 > **Author**: Adelaja Isreal Bolarinwa  
 > **GitHub**: [@BeGoodAde](https://github.com/BeGoodAde)  
@@ -16,7 +19,7 @@
 
 ## 🌟 **Project Overview**
 
-This repository demonstrates advanced automation testing capabilities, data analysis, and AI-assisted development. Built as a learning journey and professional showcase by Adelaja Isreal Bolarinwa, it covers everything from basic unit tests to sophisticated business intelligence analytics.
+This repository demonstrates advanced automation testing capabilities, data analysis, and AI-assisted development. Built as a learning journey and professional showcase by **Adelaja Isreal Bolarinwa**, it covers everything from basic unit tests to sophisticated business intelligence analytics.
 
 ### **🎯 What This Project Demonstrates**
 
