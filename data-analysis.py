@@ -14,165 +14,315 @@ class SalesAnalyzer:
     def __init__(self, data_file=None):
         # Initialize with sample data or load from file
         # Set up data cleaning and validation rules
-        pass
+        self.data = None
+        self.data_file = data_file
+        if data_file:
+            self.load_data(data_file)
     
     def load_data(self, file_path):
-        # Load data from CSV, Excel, or JSON file
+        """Load data from CSV, Excel, or JSON file with Copilot assistance"""
         # Handle different data formats and encodings
         # Validate data structure and types
-        pass
+        try:
+            if file_path.endswith('.csv'):
+                self.data = pd.read_csv(file_path)
+            elif file_path.endswith(('.xlsx', '.xls')):
+                self.data = pd.read_excel(file_path)
+            elif file_path.endswith('.json'):
+                self.data = pd.read_json(file_path)
+            else:
+                raise ValueError("Unsupported file format")
+            
+            print(f"✅ Data loaded successfully from {file_path}")
+            print(f"📊 Shape: {self.data.shape}")
+            return self.data
+        except Exception as e:
+            print(f"❌ Error loading data: {e}")
+            return None
     
     def clean_data(self):
-        """Clean the dataset: handle missing values, standardize dates, remove duplicates"""
-        if not hasattr(self, 'data') or self.data is None:
-            print("❌ No data to clean. Please load data first.")
+        """Remove duplicates and handle missing values with Copilot assistance"""
+        if self.data is None:
+            print("❌ No data loaded")
             return None
         
-        df = self.data.copy()
-        initial_records = len(df)
-        print(f"🧹 Starting data cleaning process...")
-        print(f"Initial dataset: {initial_records} records")
+        # Remove duplicates and handle missing values
+        # Standardize date formats
+        # Validate numerical data ranges
+        # Handle outliers and anomalies
+        initial_shape = self.data.shape
         
-        # 1. Remove exact duplicates
-        duplicates_before = df.duplicated().sum()
-        df = df.drop_duplicates()
-        duplicates_removed = duplicates_before
-        print(f"✅ Removed {duplicates_removed} duplicate records")
+        # Remove duplicates
+        self.data = self.data.drop_duplicates()
         
-        # 2. Handle missing values
-        missing_summary = df.isnull().sum()
-        if missing_summary.sum() > 0:
-            print(f"📊 Missing values found:")
-            for col, missing_count in missing_summary[missing_summary > 0].items():
-                print(f"   - {col}: {missing_count} missing values")
-            
-            # Fill missing values based on column type
-            for column in df.columns:
-                if df[column].isnull().sum() > 0:
-                    if df[column].dtype in ['int64', 'float64']:
-                        # Fill numerical columns with median
-                        df[column].fillna(df[column].median(), inplace=True)
-                    else:
-                        # Fill categorical columns with mode
-                        df[column].fillna(df[column].mode()[0], inplace=True)
-            print("✅ Missing values handled")
-        else:
-            print("✅ No missing values found")
+        # Handle missing values
+        self.data = self.data.fillna(method='ffill')  # Forward fill
         
-        # 3. Standardize date formats
-        try:
-            df['order_date'] = pd.to_datetime(df['order_date'])
-            print("✅ Date formats standardized")
-        except Exception as e:
-            print(f"⚠️ Date standardization warning: {e}")
+        # Convert date columns
+        if 'order_date' in self.data.columns:
+            self.data['order_date'] = pd.to_datetime(self.data['order_date'])
         
-        # 4. Validate and clean numerical data
-        # Remove records with negative prices or quantities
-        invalid_price = (df['price'] <= 0).sum()
-        invalid_quantity = (df['quantity'] <= 0).sum()
-        
-        df = df[(df['price'] > 0) & (df['quantity'] > 0)]
-        print(f"✅ Removed {invalid_price} records with invalid prices")
-        print(f"✅ Removed {invalid_quantity} records with invalid quantities")
-        
-        # 5. Handle outliers using IQR method
-        def remove_outliers(df, column):
-            Q1 = df[column].quantile(0.25)
-            Q3 = df[column].quantile(0.75)
-            IQR = Q3 - Q1
-            lower_bound = Q1 - 1.5 * IQR
-            upper_bound = Q3 + 1.5 * IQR
-            
-            outliers_count = ((df[column] < lower_bound) | (df[column] > upper_bound)).sum()
-            df_cleaned = df[(df[column] >= lower_bound) & (df[column] <= upper_bound)]
-            return df_cleaned, outliers_count
-        
-        # Remove outliers from total amount
-        df, total_outliers = remove_outliers(df, 'total')
-        print(f"✅ Removed {total_outliers} outliers from total amount")
-        
-        # 6. Validate data consistency
-        # Check if total = price * quantity
-        df['calculated_total'] = (df['price'] * df['quantity']).round(2)
-        inconsistent = (abs(df['total'] - df['calculated_total']) > 0.01).sum()
-        
-        if inconsistent > 0:
-            print(f"⚠️ Found {inconsistent} records with inconsistent totals, fixing...")
-            df['total'] = df['calculated_total']
-        
-        df.drop('calculated_total', axis=1, inplace=True)
-        
-        # 7. Reset index after cleaning
-        df.reset_index(drop=True, inplace=True)
-        
-        # Update the data
-        self.data = df
-        final_records = len(df)
-        removed_records = initial_records - final_records
-        
-        print(f"\n🎯 Cleaning Summary:")
-        print(f"   - Initial records: {initial_records}")
-        print(f"   - Final records: {final_records}")
-        print(f"   - Records removed: {removed_records}")
-        print(f"   - Data quality improvement: {((final_records/initial_records)*100):.1f}%")
-        
-        return df
+        print(f"🧹 Data cleaned: {initial_shape} → {self.data.shape}")
+        return self.data
     
     def calculate_metrics(self):
+        """Calculate key business metrics with Copilot assistance"""
+        if self.data is None:
+            print("❌ No data loaded")
+            return None
+        
         # Calculate key business metrics:
         # - Total revenue by period
         # - Average order value
         # - Customer acquisition cost
         # - Product performance metrics
         # - Seasonal trends
-        pass
+        metrics = {
+            'total_revenue': self.data['total'].sum(),
+            'average_order_value': self.data['total'].mean(),
+            'total_orders': len(self.data),
+            'unique_customers': self.data['customer_id'].nunique(),
+            'unique_products': self.data['product_name'].nunique(),
+            'top_category': self.data['category'].value_counts().index[0],
+            'revenue_by_category': self.data.groupby('category')['total'].sum().to_dict()
+        }
+        
+        print("📊 Key Business Metrics:")
+        for key, value in metrics.items():
+            if isinstance(value, (int, float)):
+                print(f"   {key}: {value:,.2f}")
+            else:
+                print(f"   {key}: {value}")
+        
+        return metrics
     
     def customer_segmentation(self):
+        """Segment customers based on purchase behavior (RFM analysis)"""
+        if self.data is None:
+            print("❌ No data loaded")
+            return None
+        
         # Segment customers based on purchase behavior
         # RFM analysis (Recency, Frequency, Monetary)
         # Identify high-value customers
         # Analyze customer lifetime value
-        pass
+        
+        # Convert order_date to datetime if needed
+        self.data['order_date'] = pd.to_datetime(self.data['order_date'])
+        current_date = self.data['order_date'].max()
+        
+        rfm = self.data.groupby('customer_id').agg({
+            'order_date': lambda x: (current_date - x.max()).days,  # Recency
+            'order_id': 'count',  # Frequency
+            'total': 'sum'  # Monetary
+        }).rename(columns={
+            'order_date': 'recency',
+            'order_id': 'frequency',
+            'total': 'monetary'
+        })
+        
+        # Create RFM scores
+        rfm['r_score'] = pd.qcut(rfm['recency'].rank(method='first'), 5, labels=[5,4,3,2,1])
+        rfm['f_score'] = pd.qcut(rfm['frequency'].rank(method='first'), 5, labels=[1,2,3,4,5])
+        rfm['m_score'] = pd.qcut(rfm['monetary'].rank(method='first'), 5, labels=[1,2,3,4,5])
+        
+        # Combine scores
+        rfm['rfm_score'] = rfm['r_score'].astype(str) + rfm['f_score'].astype(str) + rfm['m_score'].astype(str)
+        
+        print("👥 Customer Segmentation (RFM Analysis):")
+        print(f"   Total customers analyzed: {len(rfm)}")
+        print(f"   Average recency: {rfm['recency'].mean():.1f} days")
+        print(f"   Average frequency: {rfm['frequency'].mean():.1f} orders")
+        print(f"   Average monetary: ${rfm['monetary'].mean():.2f}")
+        
+        return rfm
     
     def product_analysis(self):
+        """Analyze product performance with Copilot assistance"""
+        if self.data is None:
+            print("❌ No data loaded")
+            return None
+        
         # Analyze product performance
         # Identify best and worst sellers
-        # Calculate profit margins
+        # Calculate profit margins (assuming 30% margin)
         # Analyze inventory turnover
-        pass
+        
+        product_metrics = self.data.groupby('product_name').agg({
+            'total': ['sum', 'mean', 'count'],
+            'quantity': 'sum'
+        }).round(2)
+        
+        product_metrics.columns = ['total_revenue', 'avg_order_value', 'order_count', 'total_quantity']
+        product_metrics = product_metrics.sort_values('total_revenue', ascending=False)
+        
+        # Add profit estimation (30% margin)
+        product_metrics['estimated_profit'] = product_metrics['total_revenue'] * 0.3
+        
+        print("🛍️ Product Performance Analysis:")
+        print("   Top 5 Products by Revenue:")
+        print(product_metrics.head().to_string())
+        
+        return product_metrics
     
     def time_series_analysis(self):
+        """Analyze sales trends over time with Copilot assistance"""
+        if self.data is None:
+            print("❌ No data loaded")
+            return None
+        
         # Analyze sales trends over time
         # Identify seasonal patterns
         # Forecast future sales
         # Detect anomalies in sales data
-        pass
+        
+        self.data['order_date'] = pd.to_datetime(self.data['order_date'])
+        
+        # Monthly trends
+        monthly_sales = self.data.groupby(self.data['order_date'].dt.to_period('M')).agg({
+            'total': 'sum',
+            'order_id': 'count'
+        }).rename(columns={'order_id': 'order_count'})
+        
+        # Daily trends
+        daily_sales = self.data.groupby('day_of_week')['total'].sum().sort_values(ascending=False)
+        
+        print("📈 Time Series Analysis:")
+        print("   Monthly Sales Trend:")
+        print(monthly_sales.to_string())
+        print("\n   Best Sales Days:")
+        print(daily_sales.to_string())
+        
+        return monthly_sales, daily_sales
 
 class DataVisualizer:
     def __init__(self, analyzer):
         # Set up visualization themes and styles
         # Configure chart templates
-        pass
+        self.analyzer = analyzer
+        self.data = analyzer.data if analyzer else None
+        
+        # Set up matplotlib style
+        plt.style.use('default')
+        sns.set_palette("husl")
     
     def create_dashboard(self):
+        """Create comprehensive sales dashboard with Copilot assistance"""
+        if self.data is None:
+            print("❌ No data available for visualization")
+            return None
+        
         # Create comprehensive sales dashboard
         # Include multiple chart types and KPIs
         # Make it interactive and responsive
-        pass
+        
+        fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+        fig.suptitle('📊 E-commerce Sales Dashboard', fontsize=16, fontweight='bold')
+        
+        # 1. Revenue by Category
+        category_revenue = self.data.groupby('category')['total'].sum().sort_values(ascending=False)
+        axes[0,0].pie(category_revenue.values, labels=category_revenue.index, autopct='%1.1f%%')
+        axes[0,0].set_title('Revenue by Category')
+        
+        # 2. Monthly Sales Trend
+        self.data['order_date'] = pd.to_datetime(self.data['order_date'])
+        monthly_sales = self.data.groupby(self.data['order_date'].dt.to_period('M'))['total'].sum()
+        monthly_sales.plot(kind='line', ax=axes[0,1])
+        axes[0,1].set_title('Monthly Sales Trend')
+        axes[0,1].tick_params(axis='x', rotation=45)
+        
+        # 3. Daily Sales Pattern
+        daily_pattern = self.data.groupby('day_of_week')['total'].mean()
+        day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        daily_pattern = daily_pattern.reindex(day_order)
+        daily_pattern.plot(kind='bar', ax=axes[1,0])
+        axes[1,0].set_title('Average Daily Sales')
+        axes[1,0].tick_params(axis='x', rotation=45)
+        
+        # 4. Price Distribution
+        axes[1,1].hist(self.data['total'], bins=30, alpha=0.7)
+        axes[1,1].set_title('Order Value Distribution')
+        axes[1,1].set_xlabel('Order Value ($)')
+        axes[1,1].set_ylabel('Frequency')
+        
+        plt.tight_layout()
+        plt.savefig('sales_dashboard.png', dpi=300, bbox_inches='tight')
+        print("📊 Dashboard saved as 'sales_dashboard.png'")
+        plt.show()
+        
+        return fig
     
     def revenue_charts(self):
+        """Create revenue visualization charts with Copilot assistance"""
+        if self.data is None:
+            print("❌ No data available for visualization")
+            return None
+        
         # Create revenue visualization charts
         # Monthly/quarterly revenue trends
         # Revenue by product category
-        # Geographic revenue distribution
-        pass
+        # Geographic revenue distribution (if available)
+        
+        fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+        
+        # Monthly revenue
+        self.data['order_date'] = pd.to_datetime(self.data['order_date'])
+        monthly_revenue = self.data.groupby(self.data['order_date'].dt.to_period('M'))['total'].sum()
+        monthly_revenue.plot(kind='bar', ax=axes[0])
+        axes[0].set_title('Monthly Revenue')
+        axes[0].tick_params(axis='x', rotation=45)
+        
+        # Category revenue
+        category_revenue = self.data.groupby('category')['total'].sum().sort_values(ascending=False)
+        category_revenue.plot(kind='bar', ax=axes[1])
+        axes[1].set_title('Revenue by Category')
+        axes[1].tick_params(axis='x', rotation=45)
+        
+        # Revenue distribution
+        axes[2].boxplot(self.data['total'])
+        axes[2].set_title('Revenue Distribution')
+        axes[2].set_ylabel('Order Value ($)')
+        
+        plt.tight_layout()
+        plt.savefig('revenue_charts.png', dpi=300, bbox_inches='tight')
+        print("📊 Revenue charts saved as 'revenue_charts.png'")
+        plt.show()
+        
+        return fig
     
     def customer_charts(self):
+        """Customer analysis visualizations with Copilot assistance"""
+        if self.data is None:
+            print("❌ No data available for visualization")
+            return None
+        
         # Customer analysis visualizations
         # Customer acquisition trends
         # Customer segment distribution
         # Customer lifetime value charts
-        pass
+        
+        fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+        
+        # Customer order frequency
+        customer_orders = self.data['customer_id'].value_counts()
+        axes[0].hist(customer_orders, bins=20, alpha=0.7)
+        axes[0].set_title('Customer Order Frequency Distribution')
+        axes[0].set_xlabel('Number of Orders')
+        axes[0].set_ylabel('Number of Customers')
+        
+        # Customer value distribution
+        customer_value = self.data.groupby('customer_id')['total'].sum()
+        axes[1].hist(customer_value, bins=20, alpha=0.7)
+        axes[1].set_title('Customer Lifetime Value Distribution')
+        axes[1].set_xlabel('Total Spent ($)')
+        axes[1].set_ylabel('Number of Customers')
+        
+        plt.tight_layout()
+        plt.savefig('customer_charts.png', dpi=300, bbox_inches='tight')
+        print("📊 Customer charts saved as 'customer_charts.png'")
+        plt.show()
+        
+        return fig
 
 # Sample data generation for practice
 def generate_sample_data(num_records=1000):
@@ -275,25 +425,54 @@ class SalesPredictor:
     def __init__(self, historical_data):
         # Initialize ML models for sales forecasting
         # Feature engineering and data preparation
-        pass
+        self.data = historical_data
+        self.features = None
+        self.model = None
     
     def prepare_features(self):
+        """Create features for machine learning with Copilot assistance"""
         # Create features for machine learning
         # Time-based features (day, month, season)
         # Product features (category, price, popularity)
         # Customer features (segment, history)
-        pass
+        
+        if self.data is None:
+            print("❌ No data available")
+            return None
+        
+        # Convert date to datetime
+        self.data['order_date'] = pd.to_datetime(self.data['order_date'])
+        
+        # Time-based features
+        self.data['year'] = self.data['order_date'].dt.year
+        self.data['month'] = self.data['order_date'].dt.month
+        self.data['day'] = self.data['order_date'].dt.day
+        self.data['weekday'] = self.data['order_date'].dt.weekday
+        self.data['quarter'] = self.data['order_date'].dt.quarter
+        
+        # Seasonal features
+        self.data['is_weekend'] = self.data['weekday'].isin([5, 6])
+        self.data['is_holiday_season'] = self.data['month'].isin([11, 12])
+        
+        print("✅ Features prepared for machine learning")
+        return self.data
     
     def train_model(self):
+        """Train multiple ML models with Copilot assistance"""
         # Train multiple ML models
         # Linear regression, random forest, neural networks
         # Cross-validation and hyperparameter tuning
+        print("🤖 ML model training would be implemented here")
+        print("💡 Use libraries like scikit-learn, xgboost, or tensorflow")
         pass
     
     def predict_sales(self, forecast_period=30):
+        """Generate sales predictions with Copilot assistance"""
         # Generate sales predictions
         # Include confidence intervals
         # Scenario analysis (optimistic, realistic, pessimistic)
+        print(f"📈 Sales prediction for {forecast_period} days would be implemented here")
+        print("💡 This would return forecasted sales with confidence intervals")
         pass
 
 if __name__ == "__main__":
@@ -308,14 +487,30 @@ if __name__ == "__main__":
     analyzer = SalesAnalyzer()
     analyzer.data = df  # Store data in analyzer
     
-    # Quick analysis preview
-    print("\n📊 Quick Analysis Preview:")
-    print(f"Average order value: ${df['total'].mean():.2f}")
-    print(f"Most popular category: {df['category'].value_counts().index[0]}")
-    print(f"Best sales day: {df['day_of_week'].value_counts().index[0]}")
+    # Perform analysis
+    print("\n📊 Performing Analysis...")
+    metrics = analyzer.calculate_metrics()
     
-    # Show sample data
-    print("\n📋 Sample Data Preview:")
-    print(df.head())
+    print("\n👥 Customer Segmentation...")
+    rfm = analyzer.customer_segmentation()
     
-    print("\n✨ Ready for analysis! Use Copilot to implement the methods above.")
+    print("\n🛍️ Product Analysis...")
+    product_analysis = analyzer.product_analysis()
+    
+    print("\n📈 Time Series Analysis...")
+    monthly_sales, daily_sales = analyzer.time_series_analysis()
+    
+    # Create visualizations
+    print("\n📊 Creating Visualizations...")
+    visualizer = DataVisualizer(analyzer)
+    
+    try:
+        dashboard = visualizer.create_dashboard()
+        revenue_charts = visualizer.revenue_charts()
+        customer_charts = visualizer.customer_charts()
+    except Exception as e:
+        print(f"⚠️ Visualization error: {e}")
+        print("💡 This might be due to display settings. Charts are saved as PNG files.")
+    
+    print("\n✨ Analysis completed! Check the generated PNG files for visualizations.")
+    print("💡 Use Copilot to enhance and extend the analysis methods above.")

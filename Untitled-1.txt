@@ -1,0 +1,14 @@
+copilot-testing-practice/
+├── pytest.ini
+├── setup.py
+├── data-analysis.py
+├── test_cleaning.py
+├── test_automation_health.py
+├── test_verify_fixes.py
+├── verify_fixes.py
+├── run_all_tests.py
+├── run_verification_tests.py
+├── conftest.py
+├── calculator.js
+├── calculator.test.js
+└── package.json

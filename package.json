@@ -1,57 +1,15 @@
 {
-  "name": "automation-testing-ai",
+  "name": "copilot-testing-practice",
   "version": "1.0.0",
-  "description": "Advanced automation testing and data analytics with AI-powered development by Adelaja Isreal Bolarinwa",
+  "description": "Learning automation testing with GitHub Copilot",
   "main": "calculator.js",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "start": "node data-analysis.js",
-    "clean-data": "python test_cleaning.py",
-    "analytics": "python data-analysis.py",
-    "dev": "npm run test:watch"
+    "test": "jest"
   },
-  "keywords": [
-    "automation-testing",
-    "ai-development",
-    "data-analytics",
-    "javascript",
-    "python",
-    "jest",
-    "business-intelligence",
-    "ai-powered-development"
-  ],
-  "author": {
-    "name": "Adelaja Isreal Bolarinwa",
-    "email": "bolarinwalaja@gmail.com",
-    "url": "https://github.com/BeGoodAde"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/BeGoodAde/automation-testing-ai.git"
-  },
-  "bugs": {
-    "url": "https://github.com/BeGoodAde/automation-testing-ai/issues"
-  },
-  "homepage": "https://github.com/BeGoodAde/automation-testing-ai#readme",
+  "keywords": ["testing", "copilot", "automation"],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
-    "jest": "^29.0.0",
-    "@types/jest": "^29.0.0"
-  },
-  "dependencies": {},
-  "jest": {
-    "testEnvironment": "node",
-    "collectCoverageFrom": [
-      "*.js",
-      "!node_modules/**",
-      "!coverage/**"
-    ],
-    "coverageReporters": [
-      "text",
-      "lcov",
-      "html"
-    ]
+    "jest": "^29.0.0"
   }
 }

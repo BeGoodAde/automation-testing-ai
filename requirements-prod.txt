@@ -1,0 +1,21 @@
+# Include all existing requirements
+-r requirements.txt
+
+# Production web server
+gunicorn>=21.2.0
+gevent>=23.7.0
+
+# Monitoring and logging
+prometheus-client>=0.17.0
+structlog>=23.1.0
+
+# Security
+flask-talisman>=1.1.0
+flask-limiter>=3.5.0
+
+# Performance
+redis>=4.6.0
+flask-caching>=2.1.0
+
+# Health checks
+psutil>=5.9.0
