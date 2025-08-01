@@ -1,39 +1,41 @@
-# Dependencies
-node_modules/
+﻿# Byte-compiled / optimized / DLL files
 __pycache__/
-*.pyc
-*.pyo
-venv/
-env/
+*.py[cod]
+*$py.class
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+# C extensions
+*.so
 
-# Environment
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# PyInstaller
+*.manifest
+*.spec
 
-# Logs
-logs/
-*.log
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
 
-# Coverage
-coverage/
+# Unit test / coverage reports
 htmlcov/
+.tox/
 .coverage
 .coverage.*
 .cache
@@ -46,10 +48,45 @@ coverage.xml
 # Jupyter Notebook
 .ipynb_checkpoints
 
+# IPython
+profile_default/
+ipython_config.py
+
 # pyenv
 .python-version
 
-# OS
+# Environment variables
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -63,6 +100,16 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
 
 # Temporary files
 tmp/
@@ -74,51 +121,11 @@ config.ini
 secrets.json
 .secrets
 
-{
-  "name": "automation-testing-framework",
-  "version": "1.0.0",
-  "description": "Advanced automation testing framework with PostgreSQL data analytics and business intelligence",
-  "main": "data_analysis.py",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/BeGoodAde/automation-testing-framework.git"
-  },
-  "author": "BeGoodAde",
-  "license": "MIT",
-  "homepage": "https://github.com/BeGoodAde/automation-testing-framework#readme",
-  "bugs": {
-    "url": "https://github.com/BeGoodAde/automation-testing-framework/issues"
-  },
-  "scripts": {
-    "test": "jest",
-    "test:python": "python -m pytest tests/ -v",
-    "test:coverage": "python -m pytest --cov=. --cov-report=html",
-    "test:all": "npm run test:python && npm test",
-    "lint": "eslint . && flake8 .",
-    "format": "prettier --write . && black .",
-    "prepare": "npm run test:all"
-  },
-  "keywords": [
-    "automation-testing",
-    "data-analytics", 
-    "postgresql",
-    "business-intelligence",
-    "python",
-    "javascript",
-    "pytest",
-    "jest",
-    "sql-analytics",
-    "data-processing"
-  ],
-  "devDependencies": {
-    "jest": "^29.6.2",
-    "eslint": "^8.45.0",
-    "prettier": "^3.0.0",
-    "@babel/preset-env": "^7.22.9",
-    "babel-jest": "^29.6.2"
-  },
-  "engines": {
-    "node": ">=16.0.0",
-    "python": ">=3.8.0"
-  }
-}
+# Excel temporary files
+~$*.xlsx
+~$*.xls
+
+# Backup files
+*.bak
+*.backup
+*.orig

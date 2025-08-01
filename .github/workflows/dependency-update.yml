@@ -1,0 +1,82 @@
+name: 🔄 Dependency Updates
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'  # Every Monday at 8 AM
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    name: 📦 Update Dependencies
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    
+    - name: Update Python dependencies
+      run: |
+        pip install pip-tools
+        pip-compile --upgrade requirements.in || true
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+    
+    - name: Update npm dependencies
+      run: |
+        npm update
+        npm audit fix || true
+    
+    - name: Run tests after updates
+      run: |
+        pip install -r requirements.txt
+        python -m pytest tests/ -v --tb=short -x
+    
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: '🔄 Update dependencies'
+        title: '🔄 Automated dependency update'
+        body: |
+          ## 🔄 Automated Dependency Update
+          
+          This PR updates project dependencies to their latest versions.
+          
+          ### 📋 Changes
+          - Updated Python dependencies
+          - Updated npm dependencies
+          - Fixed security vulnerabilities (if any)
+          
+          ### ✅ Testing
+          All tests have been run and passed with the updated dependencies.
+          
+          ### 🔍 Review Checklist
+          - [ ] Check for breaking changes in updated packages
+          - [ ] Verify all tests pass
+          - [ ] Review security vulnerability fixes
+          - [ ] Update documentation if needed
+        branch: dependency-updates
+        delete-branch: true
+
+# 🧪 Advanced Automation Testing Framework
+
+[![Python Tests](https://github.com/BeGoodAde/automation-testing-framework/actions/workflows/python-tests.yml/badge.svg)](https://github.com/BeGoodAde/automation-testing-framework/actions/workflows/python-tests.yml)
+[![JavaScript Tests](https://github.com/BeGoodAde/automation-testing-framework/actions/workflows/js-tests.yml/badge.svg)](https://github.com/BeGoodAde/automation-testing-framework/actions/workflows/js-tests.yml)
+[![Quality Gate](https://github.com/BeGoodAde/automation-testing-framework/actions/workflows/quality-release.yml/badge.svg)](https://github.com/BeGoodAde/automation-testing-framework/actions/workflows/quality-release.yml)
+[![Coverage](https://codecov.io/gh/BeGoodAde/automation-testing-framework/branch/main/graph/badge.svg)](https://codecov.io/gh/BeGoodAde/automation-testing-framework)
+[![Security](https://snyk.io/test/github/BeGoodAde/automation-testing-framework/badge.svg)](https://snyk.io/test/github/BeGoodAde/automation-testing-framework)
+[![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![GitHub release](https://img.shields.io/github/release/BeGoodAde/automation-testing-framework.svg)](https://github.com/BeGoodAde/automation-testing-framework/releases)
+[![GitHub stars](https://img.shields.io/github/stars/BeGoodAde/automation-testing-framework.svg)](https://github.com/BeGoodAde/automation-testing-framework/stargazers)

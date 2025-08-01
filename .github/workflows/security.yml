@@ -1,0 +1,108 @@
+name: 🛡️ Security & Compliance
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly on Sunday
+
+jobs:
+  security-scan:
+    name: 🔍 Security Vulnerability Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    
+    - name: Install security tools
+      run: |
+        pip install bandit safety semgrep pip-audit
+        pip install -r requirements.txt
+    
+    - name: Run Bandit security linter
+      run: |
+        bandit -r . -f json -o bandit-report.json || true
+        bandit -r . -ll || true
+    
+    - name: Run Safety dependency check
+      run: |
+        safety check --json --output safety-report.json || true
+        safety check || true
+    
+    - name: Run pip-audit
+      run: |
+        pip-audit --format=json --output=pip-audit-report.json || true
+        pip-audit || true
+    
+    - name: Run Semgrep SAST
+      run: |
+        semgrep --config=auto --json --output=semgrep-report.json . || true
+        semgrep --config=auto . || true
+    
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
+          pip-audit-report.json
+          semgrep-report.json
+
+  license-compliance:
+    name: 📜 License Compliance Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    
+    - name: Install license checker
+      run: |
+        pip install pip-licenses
+        pip install -r requirements.txt
+    
+    - name: Check licenses
+      run: |
+        echo "## Dependency Licenses" > license-report.md
+        pip-licenses --format=markdown >> license-report.md
+        echo "Checking for incompatible licenses..."
+        pip-licenses --fail-on="GPL"
+    
+    - name: Upload license report
+      uses: actions/upload-artifact@v3
+      with:
+        name: license-report
+        path: license-report.md
+
+  data-privacy:
+    name: 🔒 Data Privacy Compliance
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Check for sensitive data patterns
+      run: |
+        echo "Scanning for potential sensitive data patterns..."
+        
+        # Check for common sensitive patterns
+        echo "Checking for potential secrets..."
+        grep -r -i "password\|secret\|token\|api_key" . --include="*.py" --include="*.js" --include="*.json" || true
+        
+        echo "Checking for email patterns..."
+        grep -r -E "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" . --include="*.py" --include="*.js" || true
+        
+        echo "Checking for phone patterns..."
+        grep -r -E "\b\d{3}[-.]?\d{3}[-.]?\d{4}\b" . --include="*.py" --include="*.js" || true

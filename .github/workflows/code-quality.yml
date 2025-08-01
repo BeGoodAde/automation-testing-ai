@@ -1,0 +1,118 @@
+name: 🎯 Advanced Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  sonarqube:
+    name: 📊 SonarQube Analysis
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    
+    - name: Install dependencies and run tests
+      run: |
+        pip install -r requirements.txt
+        python -m pytest tests/ --cov=. --cov-report=xml
+    
+    - name: SonarQube Scan
+      uses: sonarqube-quality-gate-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  complexity-analysis:
+    name: 🧮 Code Complexity Analysis
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    
+    - name: Install analysis tools
+      run: |
+        pip install radon xenon mccabe
+    
+    - name: Run complexity analysis
+      run: |
+        echo "## Cyclomatic Complexity Report" > complexity-report.md
+        radon cc . --average --show-complexity >> complexity-report.md
+        echo "## Maintainability Index" >> complexity-report.md
+        radon mi . >> complexity-report.md
+        echo "## Raw Metrics" >> complexity-report.md
+        radon raw . >> complexity-report.md
+    
+    - name: Upload complexity report
+      uses: actions/upload-artifact@v3
+      with:
+        name: complexity-analysis
+        path: complexity-report.md
+
+  documentation-quality:
+    name: 📚 Documentation Quality Check
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Check documentation completeness
+      run: |
+        echo "Checking for missing docstrings..."
+        python -c "
+        import ast
+        import os
+        
+        def check_docstrings(filepath):
+            with open(filepath, 'r') as f:
+                tree = ast.parse(f.read())
+            
+            missing = []
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+                    if not ast.get_docstring(node):
+                        missing.append(f'{filepath}:{node.lineno} - {node.name}')
+            return missing
+        
+        all_missing = []
+        for root, dirs, files in os.walk('.'):
+            dirs[:] = [d for d in dirs if not d.startswith('.')]
+            for file in files:
+                if file.endswith('.py') and not file.startswith('test_'):
+                    filepath = os.path.join(root, file)
+                    missing = check_docstrings(filepath)
+                    all_missing.extend(missing)
+        
+        if all_missing:
+            print('Missing docstrings found:')
+            for item in all_missing:
+                print(f'  {item}')
+        else:
+            print('✅ All functions and classes have docstrings!')
+        "
+    
+    - name: Check README quality
+      run: |
+        echo "Checking README.md quality..."
+        if [ ! -f README.md ]; then
+          echo "❌ README.md not found"
+          exit 1
+        fi
+        
+        word_count=$(wc -w < README.md)
+        if [ $word_count -lt 500 ]; then
+          echo "⚠️ README.md might be too short ($word_count words)"
+        else
+          echo "✅ README.md has adequate content ($word_count words)"
+        fi
