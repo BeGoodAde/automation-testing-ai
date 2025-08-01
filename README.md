@@ -10,7 +10,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/BeGoodAde/automation-testing-ai.svg)](https://github.com/BeGoodAde/automation-testing-ai/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/BeGoodAde/automation-testing-ai.svg)](https://github.com/BeGoodAde/automation-testing-ai/network)
 
-> **Author**: Adelaja Isreal Bolarinwa  
+> **Author**: BeGoodAde  
 > **GitHub**: [@BeGoodAde](https://github.com/BeGoodAde)  
 > **LinkedIn**: [https://www.linkedin.com/in/adelaja-isreal-bolarinwa/](https://www.linkedin.com/in/adelaja-isreal-bolarinwa/)  
 > **Email**: bolarinwalaja@gmail.com
