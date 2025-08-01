@@ -9,15 +9,23 @@ env/
 # Database
 *.db
 *.sqlite
+*.sqlite3
 
 # Environment
 .env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
 # Logs
 logs/
@@ -27,18 +35,90 @@ logs/
 coverage/
 htmlcov/
 .coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
 
-# Build
-dist/
-build/
-*.egg-info/
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
 
 # OS
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
 
-# Data
-data/raw/*
-data/processed/*
-!data/raw/.gitkeep
-!data/processed/.gitkeep
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+tmp/
+temp/
+.tmp/
+
+# Configuration files with sensitive data
+config.ini
+secrets.json
+.secrets
+
+{
+  "name": "automation-testing-framework",
+  "version": "1.0.0",
+  "description": "Advanced automation testing framework with PostgreSQL data analytics and business intelligence",
+  "main": "data_analysis.py",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BeGoodAde/automation-testing-framework.git"
+  },
+  "author": "BeGoodAde",
+  "license": "MIT",
+  "homepage": "https://github.com/BeGoodAde/automation-testing-framework#readme",
+  "bugs": {
+    "url": "https://github.com/BeGoodAde/automation-testing-framework/issues"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:python": "python -m pytest tests/ -v",
+    "test:coverage": "python -m pytest --cov=. --cov-report=html",
+    "test:all": "npm run test:python && npm test",
+    "lint": "eslint . && flake8 .",
+    "format": "prettier --write . && black .",
+    "prepare": "npm run test:all"
+  },
+  "keywords": [
+    "automation-testing",
+    "data-analytics", 
+    "postgresql",
+    "business-intelligence",
+    "python",
+    "javascript",
+    "pytest",
+    "jest",
+    "sql-analytics",
+    "data-processing"
+  ],
+  "devDependencies": {
+    "jest": "^29.6.2",
+    "eslint": "^8.45.0",
+    "prettier": "^3.0.0",
+    "@babel/preset-env": "^7.22.9",
+    "babel-jest": "^29.6.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "python": ">=3.8.0"
+  }
+}
